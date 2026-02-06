@@ -36,8 +36,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import Navbar from '@/components/layouts/Navbar';
+import Footer from '@/components/layouts/Footer';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
