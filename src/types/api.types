@@ -1,0 +1,339 @@
+// ============================================
+// FILE: src/types/api.types.ts
+// Copy this entire file first!
+// ============================================
+
+// ============================================
+// User & Auth Types
+// ============================================
+
+export enum UserRole {
+  CUSTOMER = 'CUSTOMER',
+  PROVIDER = 'PROVIDER',
+  ADMIN = 'ADMIN',
+}
+
+export enum UserStatus {
+  ACTIVE = 'ACTIVE',
+  SUSPENDED = 'SUSPENDED',
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  phone?: string;
+  role: UserRole;
+  status: UserStatus;
+  createdAt: string;
+  updatedAt: string;
+  providerProfile?: ProviderProfile;
+}
+
+export interface ProviderProfile {
+  id: string;
+  userId: string;
+  restaurantName: string;
+  description?: string;
+  address: string;
+  openingHours?: string;
+  closingHours?: string;
+  imageUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RegisterDto {
+  email: string;
+  password: string;
+  name: string;
+  phone?: string;
+  role: UserRole.CUSTOMER | UserRole.PROVIDER;
+  // Provider-specific fields
+  restaurantName?: string;
+  description?: string;
+  address?: string;
+}
+
+export interface LoginDto {
+  email: string;
+  password: string;
+}
+
+export interface UpdateProfileDto {
+  name?: string;
+  phone?: string;
+  email?: string;
+}
+
+export interface UpdateProviderProfileDto {
+  restaurantName?: string;
+  description?: string;
+  address?: string;
+  openingHours?: string;
+  closingHours?: string;
+  imageUrl?: string;
+}
+
+export interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  data: {
+    user: User;
+    token: string;
+  };
+  message?: string;
+}
+
+// ============================================
+// Category Types
+// ============================================
+
+export interface Category {
+  id: string;
+  name: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCategoryDto {
+  name: string;
+  description?: string;
+}
+
+export interface UpdateCategoryDto {
+  name?: string;
+  description?: string;
+}
+
+// ============================================
+// Meal Types
+// ============================================
+
+export interface Meal {
+  id: string;
+  providerId: string;
+  categoryId: string;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl?: string;
+  ingredients?: string;
+  isAvailable: boolean;
+  dietaryInfo?: string;
+  createdAt: string;
+  updatedAt: string;
+  category?: Category;
+  provider?: User;
+  averageRating?: number;
+  reviewCount?: number;
+}
+
+export interface CreateMealDto {
+  categoryId: string;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl?: string;
+  ingredients?: string;
+  dietaryInfo?: string;
+  isAvailable?: boolean;
+}
+
+export interface UpdateMealDto {
+  categoryId?: string;
+  name?: string;
+  description?: string;
+  price?: number;
+  imageUrl?: string;
+  ingredients?: string;
+  dietaryInfo?: string;
+  isAvailable?: boolean;
+}
+
+export interface MealFilters {
+  categoryId?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  dietaryInfo?: string;
+  search?: string;
+  providerId?: string;
+  isAvailable?: boolean;
+  page?: number;
+  limit?: number;
+}
+
+// ============================================
+// Order Types
+// ============================================
+
+export enum OrderStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  PREPARING = 'PREPARING',
+  OUT_FOR_DELIVERY = 'OUT_FOR_DELIVERY',
+  DELIVERED = 'DELIVERED',
+  CANCELLED = 'CANCELLED',
+}
+
+export interface OrderItem {
+  id: string;
+  orderId: string;
+  mealId: string;
+  quantity: number;
+  priceAtOrder: number;
+  createdAt: string;
+  meal?: Meal;
+}
+
+export interface Order {
+  id: string;
+  customerId: string;
+  providerId: string;
+  status: OrderStatus;
+  deliveryAddress: string;
+  contactPhone: string;
+  orderNotes?: string;
+  totalAmount: number;
+  createdAt: string;
+  updatedAt: string;
+  customer?: User;
+  provider?: User;
+  orderItems?: OrderItem[];
+}
+
+export interface CreateOrderDto {
+  providerId: string;
+  items: Array<{
+    mealId: string;
+    quantity: number;
+  }>;
+  deliveryAddress: string;
+  contactPhone: string;
+  orderNotes?: string;
+}
+
+export interface OrderFilters {
+  status?: OrderStatus;
+  providerId?: string;
+  customerId?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface UpdateOrderStatusDto {
+  status: OrderStatus;
+}
+
+// ============================================
+// Review Types
+// ============================================
+
+export interface Review {
+  id: string;
+  customerId: string;
+  mealId: string;
+  orderId: string;
+  rating: number;
+  comment?: string;
+  createdAt: string;
+  updatedAt: string;
+  customer?: User;
+  meal?: Meal;
+  order?: Order;
+}
+
+export interface CreateReviewDto {
+  orderId: string;
+  mealId: string;
+  rating: number;
+  comment?: string;
+}
+
+export interface UpdateReviewDto {
+  rating?: number;
+  comment?: string;
+}
+
+export interface ReviewFilters {
+  mealId?: string;
+  customerId?: string;
+  rating?: number;
+  page?: number;
+  limit?: number;
+}
+
+// ============================================
+// Provider Types
+// ============================================
+
+export interface ProviderStats {
+  totalOrders: number;
+  totalRevenue: number;
+  pendingOrders: number;
+  completedOrders: number;
+  totalMeals: number;
+  averageRating: number;
+  popularMeals: Array<{
+    meal: Meal;
+    orderCount: number;
+  }>;
+}
+
+// ============================================
+// Admin Types
+// ============================================
+
+export interface UserFilters {
+  role?: UserRole;
+  status?: UserStatus;
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface UpdateUserStatusDto {
+  status: UserStatus;
+}
+
+export interface AdminStats {
+  totalUsers: number;
+  totalCustomers: number;
+  totalProviders: number;
+  totalOrders: number;
+  totalRevenue: number;
+  activeProviders: number;
+  recentOrders: Order[];
+}
+
+// ============================================
+// API Response Types
+// ============================================
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export interface ApiError {
+  success: false;
+  message: string;
+  errors?: Record<string, string[]>;
+}
