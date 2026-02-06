@@ -3,14 +3,22 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { MapPinIcon, ClockIcon, PhoneIcon } from '@heroicons/react/24/outline';
+import { MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { providersApi } from '@/lib/api';
+import { Meal, User, ProviderProfile } from '@/types';
 import MealCard from '@/components/meals/MealCard';
 import { Spinner, StarRating, Badge } from '@/components/ui';
 
+interface ProviderWithDetails extends User {
+  providerProfile: ProviderProfile;
+  meals: Meal[];
+  avgRating?: number;
+  reviewCount?: number;
+}
+
 export default function ProviderDetailPage() {
   const { id } = useParams();
-  const [provider, setProvider] = useState<any>(null);
+  const [provider, setProvider] = useState<ProviderWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
@@ -18,9 +26,11 @@ export default function ProviderDetailPage() {
     const fetchProvider = async () => {
       try {
         const response = await providersApi.getById(id as string);
-        setProvider(response.data.data);
+        const providerData = response.data?.data || response.data;
+        setProvider(providerData as ProviderWithDetails);
       } catch (error) {
         console.error('Failed to fetch provider:', error);
+        setProvider(null);
       } finally {
         setLoading(false);
       }
@@ -42,16 +52,21 @@ export default function ProviderDetailPage() {
     );
   }
 
+  // Extract unique categories from meals
   const categories = [
     ...new Set(
-      provider.meals.map((m: any) => m.category?.name).filter(Boolean),
+      provider.meals
+        .map((meal) => meal.category?.name)
+        .filter((name): name is string => Boolean(name)),
     ),
   ];
+
+  // Filter meals by selected category
   const filteredMeals =
     selectedCategory === 'all'
       ? provider.meals
       : provider.meals.filter(
-          (m: any) => m.category?.name === selectedCategory,
+          (meal) => meal.category?.name === selectedCategory,
         );
 
   return (
@@ -88,12 +103,14 @@ export default function ProviderDetailPage() {
                 </Badge>
               )}
 
-              {provider.avgRating > 0 && (
+              {provider.avgRating !== undefined && provider.avgRating > 0 && (
                 <div className="flex items-center gap-2 mb-4">
                   <StarRating rating={provider.avgRating} showValue />
-                  <span className="text-gray-500">
-                    ({provider.reviewCount} reviews)
-                  </span>
+                  {provider.reviewCount !== undefined && (
+                    <span className="text-gray-500">
+                      ({provider.reviewCount} reviews)
+                    </span>
+                  )}
                 </div>
               )}
 
@@ -105,15 +122,20 @@ export default function ProviderDetailPage() {
             </div>
 
             <div className="text-sm text-gray-500 space-y-2">
-              <div className="flex items-center">
-                <MapPinIcon className="h-5 w-5 mr-2" />
-                {provider.providerProfile?.address}
-              </div>
-              <div className="flex items-center">
-                <ClockIcon className="h-5 w-5 mr-2" />
-                {provider.providerProfile?.openingHours} -{' '}
-                {provider.providerProfile?.closingHours}
-              </div>
+              {provider.providerProfile?.address && (
+                <div className="flex items-center">
+                  <MapPinIcon className="h-5 w-5 mr-2" />
+                  {provider.providerProfile.address}
+                </div>
+              )}
+              {provider.providerProfile?.openingHours &&
+                provider.providerProfile?.closingHours && (
+                  <div className="flex items-center">
+                    <ClockIcon className="h-5 w-5 mr-2" />
+                    {provider.providerProfile.openingHours} -{' '}
+                    {provider.providerProfile.closingHours}
+                  </div>
+                )}
             </div>
           </div>
         </div>
@@ -155,7 +177,7 @@ export default function ProviderDetailPage() {
             <p className="text-gray-500 text-center py-8">No items available</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredMeals.map((meal: any) => (
+              {filteredMeals.map((meal) => (
                 <MealCard key={meal.id} meal={meal} />
               ))}
             </div>
