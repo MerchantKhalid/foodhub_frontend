@@ -1,8 +1,4 @@
-// ============================================
 
-// ============================================
-
-// ============================================
 // User & Auth Types
 
 
@@ -111,9 +107,9 @@ export interface UpdateCategoryDto {
   description?: string;
 }
 
-// ============================================
+
 // Meal Types
-// ============================================
+
 
 export interface Meal {
   id: string;
@@ -168,9 +164,9 @@ export interface MealFilters {
   limit?: number;
 }
 
-// ============================================
+
 // Order Types
-// ============================================
+
 
 export enum OrderStatus {
   PENDING = 'PENDING',
@@ -230,9 +226,9 @@ export interface UpdateOrderStatusDto {
   status: OrderStatus;
 }
 
-// ============================================
+
 // Review Types
-// ============================================
+
 
 export interface Review {
   id: string;
@@ -268,9 +264,9 @@ export interface ReviewFilters {
   limit?: number;
 }
 
-// ============================================
+
 // Provider Types
-// ============================================
+
 
 export interface ProviderStats {
   totalOrders: number;
@@ -285,9 +281,8 @@ export interface ProviderStats {
   }>;
 }
 
-// ============================================
 // Admin Types
-// ============================================
+
 
 export interface UserFilters {
   role?: UserRole;
@@ -311,9 +306,9 @@ export interface AdminStats {
   recentOrders: Order[];
 }
 
-// ============================================
+
 // API Response Types
-// ============================================
+
 
 export interface ApiResponse<T> {
   success: boolean;
