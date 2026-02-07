@@ -64,10 +64,48 @@ export default function RegisterPage() {
 
   const selectedRole = watch('role');
 
+  // const onSubmit = async (data: RegisterForm) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const { confirmPassword, ...registerData } = data;
+  //     const response = await authApi.register(registerData);
+  //     const { user, token } = response.data.data;
+
+  //     setAuth(user, token);
+  //     toast.success('Registration successful!');
+
+  //     if (user.role === Role.PROVIDER) {
+  //       router.push('/provider/dashboard');
+  //     } else {
+  //       router.push('/');
+  //     }
+  //   } catch (error: any) {
+  //     toast.error(error.response?.data?.error || 'Registration failed');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const onSubmit = async (data: RegisterForm) => {
     setIsLoading(true);
     try {
-      const { confirmPassword, ...registerData } = data;
+      const {
+        confirmPassword,
+        restaurantAddress,
+        restaurantDescription,
+        cuisineType,
+        ...rest
+      } = data;
+
+      const registerData = {
+        ...rest,
+        role: data.role as Role, // Add type assertion here
+        // Map the form fields to RegisterData interface fields
+        address: restaurantAddress,
+        description: restaurantDescription,
+        // Note: cuisineType is not in RegisterData interface, so we're omitting it
+      };
+
       const response = await authApi.register(registerData);
       const { user, token } = response.data.data;
 
