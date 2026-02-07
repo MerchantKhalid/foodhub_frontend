@@ -65,6 +65,7 @@ export default function AddMealPage() {
         price: Number(data.price),
         prepTime: Number(data.prepTime) || 30,
         imageUrl: data.imageUrl || undefined,
+        dietaryInfo: data.dietaryInfo as DietaryType,
       });
       toast.success('Meal added successfully!');
       router.push('/provider/menu');

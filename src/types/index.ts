@@ -243,6 +243,7 @@ export interface Meal {
   description: string;
   price: number;
   imageUrl?: string;
+  reviews?: Review[];
   ingredients?: string;
   isAvailable: boolean;
   dietaryInfo?: DietaryType;

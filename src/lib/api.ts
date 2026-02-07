@@ -123,6 +123,7 @@ export interface CreateMealData {
   isGlutenFree?: boolean;
   isAvailable?: boolean;
   dietaryInfo?: DietaryType;
+  prepTime?: number;
 }
 
 export interface UpdateMealData {
@@ -137,6 +138,7 @@ export interface UpdateMealData {
   isGlutenFree?: boolean;
   isAvailable?: boolean;
   dietaryInfo?: DietaryType;
+  prepTime?: number;
 }
 
 export interface OrderItem {
