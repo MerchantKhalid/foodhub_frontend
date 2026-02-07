@@ -774,16 +774,19 @@ export interface UserQueryParams {
   search?: string;
   page?: number;
   limit?: number;
+  imageUrl?: string;
 }
 
 export interface CreateCategoryData {
   name: string;
   description?: string;
+  imageUrl?: string;
 }
 
 export interface UpdateCategoryData {
   name?: string;
   description?: string;
+  imageUrl?: string;
 }
 
 // Auth API

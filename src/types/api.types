@@ -1,11 +1,10 @@
 // ============================================
-// FILE: src/types/api.types.ts
-// Copy this entire file first!
+
 // ============================================
 
 // ============================================
 // User & Auth Types
-// ============================================
+
 
 export enum UserRole {
   CUSTOMER = 'CUSTOMER',
@@ -104,6 +103,7 @@ export interface Category {
 export interface CreateCategoryDto {
   name: string;
   description?: string;
+  imageUrl?: string;
 }
 
 export interface UpdateCategoryDto {
