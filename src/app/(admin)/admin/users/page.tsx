@@ -64,31 +64,6 @@ export default function AdminUsersPage() {
     fetchUsers(1);
   };
 
-  // const handleAction = async () => {
-  //   if (!actionModal.user || !actionModal.action) return;
-
-  //   setProcessing(true);
-  //   try {
-  //     if (actionModal.action === 'delete') {
-  //       await adminApi.deleteUser(actionModal.user.id);
-  //       toast.success('User deleted successfully');
-  //     } else {
-  //       const newStatus =
-  //         actionModal.action === 'suspend' ? 'SUSPENDED' : 'ACTIVE';
-  //       await adminApi.updateUserStatus(actionModal.user.id, newStatus);
-  //       toast.success(
-  //         `User ${actionModal.action === 'suspend' ? 'suspended' : 'activated'} successfully`,
-  //       );
-  //     }
-  //     setActionModal({ open: false, user: null, action: null });
-  //     fetchUsers(pagination.page);
-  //   } catch (error: any) {
-  //     toast.error(error.response?.data?.error || 'Action failed');
-  //   } finally {
-  //     setProcessing(false);
-  //   }
-  // };
-
   const handleAction = async () => {
     if (!actionModal.user || !actionModal.action) return;
 

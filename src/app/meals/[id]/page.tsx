@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -19,11 +19,15 @@ import { format } from 'date-fns';
 
 export default function MealDetailPage() {
   const { id } = useParams();
+  const router = useRouter();
   const [meal, setMeal] = useState<Meal | null>(null);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1);
-  const { addItem, items, updateQuantity } = useCartStore();
+  const { addItem, items, updateQuantity, removeItem } = useCartStore();
   const { isAuthenticated, user } = useAuthStore();
+
+  // Get current quantity from cart
+  const cartItem = items.find((item) => item.meal.id === id);
+  const currentQuantity = cartItem?.quantity || 0;
 
   useEffect(() => {
     const fetchMeal = async () => {
@@ -57,20 +61,63 @@ export default function MealDetailPage() {
     );
   }
 
-  const handleAddToCart = () => {
-    if (items.length > 0 && items[0].meal.providerId !== meal.providerId) {
+  const handleQuantityChange = (newQuantity: number) => {
+    // Require login before adding to cart
+    if (!isAuthenticated) {
+      toast.error('Please login to add items to cart');
+      router.push('/login');
+      return;
+    }
+
+    // Only customers can add to cart
+    if (user?.role !== Role.CUSTOMER) {
+      toast.error('Only customers can add items to cart');
+      return;
+    }
+
+    // Check if adding from different provider
+    if (
+      newQuantity > 0 &&
+      !cartItem &&
+      items.length > 0 &&
+      items[0].meal.providerId !== meal.providerId
+    ) {
       if (
         !confirm('Adding this item will clear your current cart. Continue?')
       ) {
         return;
       }
+      // Clear cart and add new item
+      useCartStore.getState().clearCart();
     }
 
-    for (let i = 0; i < quantity; i++) {
-      addItem(meal);
+    if (newQuantity === 0) {
+      // Remove from cart
+      removeItem(meal.id);
+      toast.success('Removed from cart');
+    } else if (newQuantity > 0) {
+      if (cartItem) {
+        // Update existing item quantity
+        updateQuantity(meal.id, newQuantity);
+      } else {
+        // Add new item to cart
+        addItem(meal);
+        // If user wants more than 1, update the quantity
+        if (newQuantity > 1) {
+          updateQuantity(meal.id, newQuantity);
+        }
+      }
     }
-    toast.success(`Added ${quantity} ${meal.name} to cart`);
-    setQuantity(1);
+  };
+
+  const handleIncrement = () => {
+    handleQuantityChange(currentQuantity + 1);
+  };
+
+  const handleDecrement = () => {
+    if (currentQuantity > 0) {
+      handleQuantityChange(currentQuantity - 1);
+    }
   };
 
   const showAddToCart =
@@ -171,33 +218,67 @@ export default function MealDetailPage() {
             </div>
           )}
 
-          {/* Add to Cart */}
+          {/* Quantity Control - Real-time Cart Updates */}
           {showAddToCart && (
-            <div className="flex items-center gap-4">
-              <div className="flex items-center border rounded-lg">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="p-2 hover:bg-gray-100"
-                >
-                  <MinusIcon className="h-5 w-5" />
-                </button>
-                <span className="px-4 py-2 font-semibold">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="p-2 hover:bg-gray-100"
-                >
-                  <PlusIcon className="h-5 w-5" />
-                </button>
+            <div>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center border rounded-lg">
+                  <button
+                    onClick={handleDecrement}
+                    className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={currentQuantity === 0}
+                  >
+                    <MinusIcon className="h-5 w-5" />
+                  </button>
+                  <span className="px-4 py-2 font-semibold min-w-[3rem] text-center">
+                    {currentQuantity}
+                  </span>
+                  <button
+                    onClick={handleIncrement}
+                    className="p-2 hover:bg-gray-100"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {currentQuantity > 0 ? (
+                  <div className="flex-1 flex items-center gap-2">
+                    <div className="text-lg font-semibold text-primary-600">
+                      Total: ${(meal.price * currentQuantity).toFixed(2)}
+                    </div>
+                    <ShoppingCartIcon className="h-6 w-6 text-primary-600" />
+                  </div>
+                ) : (
+                  <div className="flex-1 text-sm text-gray-500">
+                    {isAuthenticated
+                      ? 'Click + to add to cart'
+                      : 'Login to add to cart'}
+                  </div>
+                )}
               </div>
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={handleAddToCart}
-                className="flex-1"
-              >
-                <ShoppingCartIcon className="h-5 w-5 mr-2" />
-                Add to Cart - ${(meal.price * quantity).toFixed(2)}
-              </Button>
+
+              {/* Cart status indicator */}
+              {currentQuantity > 0 && (
+                <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 bg-green-600 rounded-full"></span>
+                  {currentQuantity} {currentQuantity === 1 ? 'item' : 'items'}{' '}
+                  in cart
+                </p>
+              )}
+
+              {/* Login prompt for non-authenticated users */}
+              {!isAuthenticated && (
+                <p className="text-sm text-gray-500 mt-2">
+                  Please{' '}
+                  <Link
+                    href="/login"
+                    className="text-primary-600 hover:underline"
+                  >
+                    login
+                  </Link>{' '}
+                  to add items to your cart
+                </p>
+              )}
             </div>
           )}
         </div>

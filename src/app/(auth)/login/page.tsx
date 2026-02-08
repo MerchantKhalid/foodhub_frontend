@@ -118,7 +118,7 @@ export default function LoginPage() {
           <div className="text-xs text-gray-600 space-y-1">
             <p>Admin: admin@foodhub.com / password123</p>
             <p>Provider: mario@pizzapalace.com / password123</p>
-            <p>Customer: john@customer.com / password123</p>
+            <p>Customer: khalid@customer.com / password123</p>
           </div>
         </div>
       </div>
