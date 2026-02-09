@@ -355,3 +355,5 @@ export function OrderStatusTracker({
     </div>
   );
 }
+
+export default OrderStatusTracker;
