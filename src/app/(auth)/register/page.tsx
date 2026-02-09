@@ -79,7 +79,7 @@ export default function RegisterPage() {
         ...rest,
         role: data.role as Role,
 
-        address: restaurantAddress,
+        restaurantAddress: restaurantAddress,
         description: restaurantDescription,
       };
 
