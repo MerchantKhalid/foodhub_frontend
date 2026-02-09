@@ -80,7 +80,8 @@ export default function RegisterPage() {
         role: data.role as Role,
 
         restaurantAddress: restaurantAddress,
-        description: restaurantDescription,
+        restaurantDescription: restaurantDescription,
+        cuisineType: cuisineType,
       };
 
       const response = await authApi.register(registerData);
