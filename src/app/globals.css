@@ -1,14 +1,18 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    /* Light mode: light gray background, dark text */
+    /* Dark mode: very dark background, light text */
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300;
   }
 }
 
 @layer components {
+  /* ── Buttons ──────────────────────────────────────────── */
   .btn {
     @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200;
   }
@@ -18,7 +22,9 @@
   }
 
   .btn-secondary {
-    @apply btn bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500 border-gray-300;
+    /* Dark mode: darker gray with lighter text */
+    @apply btn bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500 border-gray-300
+           dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 dark:border-gray-600;
   }
 
   .btn-danger {
@@ -29,50 +35,64 @@
     @apply btn bg-green-600 text-white hover:bg-green-700 focus:ring-green-500;
   }
 
+  /* ── Form inputs ──────────────────────────────────────── */
   .input {
-    @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm;
+    /* Dark mode: dark background, light text, dark border */
+    @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm 
+           placeholder-gray-400 focus:outline-none focus:ring-primary-500 
+           focus:border-primary-500 sm:text-sm bg-white text-gray-900
+           dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 
+           dark:placeholder-gray-500 dark:focus:ring-primary-400 
+           transition-colors duration-200;
   }
 
   .input-error {
-    @apply input border-red-300 focus:ring-red-500 focus:border-red-500;
+    @apply input border-red-300 focus:ring-red-500 focus:border-red-500
+           dark:border-red-500;
   }
 
   .label {
-    @apply block text-sm font-medium text-gray-700 mb-1;
+    @apply block text-sm font-medium text-gray-700 mb-1 
+           dark:text-gray-300;
   }
 
+  /* ── Cards ────────────────────────────────────────────── */
   .card {
-    @apply bg-white rounded-lg shadow-md overflow-hidden;
+    /* Dark mode: dark card background */
+    @apply bg-white rounded-lg shadow-md overflow-hidden
+           dark:bg-gray-800 dark:shadow-gray-900;
   }
 
+  /* ── Page layout ──────────────────────────────────────── */
   .page-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
   }
 
   .page-title {
-    @apply text-2xl sm:text-3xl font-bold text-gray-900 mb-6;
+    @apply text-2xl sm:text-3xl font-bold text-gray-900 mb-6
+           dark:text-gray-100;
   }
 }
 
-/* Custom scrollbar */
+/* ── Custom scrollbar (light mode) ───────────────────────── */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  @apply bg-gray-100 dark:bg-gray-800;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full;
+  @apply bg-gray-300 rounded-full dark:bg-gray-600;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
+  @apply bg-gray-400 dark:bg-gray-500;
 }
 
-/* Loading spinner animation */
+/* ── Animations ──────────────────────────────────────────── */
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -83,7 +103,6 @@
   animation: spin 1s linear infinite;
 }
 
-/* Skeleton loading animation */
 @keyframes pulse {
   0%,
   100% {

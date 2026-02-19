@@ -84,9 +84,8 @@ export interface AuthResponse {
   message?: string;
 }
 
-// ============================================
+
 // Category Types
-// ============================================
 
 export interface Category {
   id: string;
