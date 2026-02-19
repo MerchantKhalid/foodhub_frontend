@@ -1,5 +1,5 @@
 'use client'
-import { useState, Fragment, useEffect } from 'react';
+import { useState, Fragment} from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu, Transition } from '@headlessui/react';
@@ -14,7 +14,7 @@ import { useAuthStore } from '@/lib/store';
 import { useCartStore } from '@/lib/store';
 import { Role } from '@/types';
 import NutritionSearch from './NutritionSearch';
-import DarkModeToggle from '@/components/ui/DarkModeToggle'; // ← ADDED
+import DarkModeToggle from '@/components/ui/DarkModeToggle'; 
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -69,8 +69,7 @@ export default function Navbar() {
   };
 
   return (
-    // bg-white dark:bg-gray-900 → navbar background changes in dark mode
-    // shadow-sm dark:shadow-gray-800 → shadow adapts too
+    
     <nav className="bg-white dark:bg-gray-900 shadow-sm dark:shadow-gray-800 sticky top-0 z-40 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
@@ -110,7 +109,7 @@ export default function Navbar() {
               <span>Nutrition</span>
             </button>
 
-            {/* ← ADDED: Dark mode toggle in desktop nav */}
+            {/*  Dark mode toggle in desktop nav */}
             <DarkModeToggle />
           </div>
 
@@ -261,7 +260,7 @@ export default function Navbar() {
               🥗 Nutrition Lookup
             </button>
 
-            {/* ← ADDED: Dark mode toggle in mobile menu */}
+            {/*  Dark mode toggle in mobile menu */}
             <div className="px-3 py-2 flex items-center justify-between">
               <span className="text-base font-medium text-gray-700 dark:text-gray-300">
                 Dark Mode
